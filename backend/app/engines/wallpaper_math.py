@@ -26,8 +26,9 @@ def roll_count(
         if pattern_m < 0:
             # 跳对且花高为负：参数无意义，拒绝测算
             raise ValueError("offset match requires a non-negative pattern height")
-        # 跳对在层高基础上再加半个花高，半花高向上取到毫米后换算
-        extra_m = math.ceil(pattern_m * 1000.0 / 2.0) / 1000.0
+        # 跳对比直对多错半个花：整花高 + 半花高（向上取到毫米），条长严格长于同参直对
+        half_m = math.ceil(pattern_m * 1000.0 / 2.0) / 1000.0
+        extra_m = pattern_m + half_m
     else:
         # 直对在层高基础上加整个花高，与改造前同参一致
         extra_m = max(0.0, pattern_m)

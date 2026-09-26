@@ -37,21 +37,53 @@ def test_saved_run_pins_match_type_independent_of_roll_default():
     saved = estimate_service.run_estimate(2, 2, True, "跳对留档", "offset")
     run_id = saved["run_id"]
     assert saved["match_type"] == "offset"
-    assert saved["drop_len_m"] == 3.12
-    assert saved["rolls"] == 13
+    assert saved["drop_len_m"] == 3.76
+    assert saved["strips_per_roll"] == 2
+    assert saved["rolls"] == 19
 
     # 事后只改卷材默认匹配方式为直对
     rolls.update_match_type(2, "straight")
     run = history.get_run(run_id)
     assert run["result"]["match_type"] == "offset"
-    assert run["result"]["drop_len_m"] == 3.12
-    assert run["result"]["rolls"] == 13
+    assert run["result"]["drop_len_m"] == 3.76
+    assert run["result"]["strips_per_roll"] == 2
+    assert run["result"]["rolls"] == 19
 
     # 回看接口同样返回写入时的值
-    # （重置回跳对，保持种子语义）
+    # （重置回直对，保持种子语义）
     rolls.update_match_type(2, "straight")
     again = history.get_run(run_id)["result"]
     assert again["match_type"] == "offset"
+    assert again["drop_len_m"] == 3.76
+    assert again["rolls"] == 19
+
+
+def test_saved_straight_run_not_recomputed_with_roll_default_offset():
+    # 对称情形：直对落库后把卷材默认改成跳对，回看不得跟着重算
+    saved = estimate_service.run_estimate(2, 2, True, "直对留档", "straight")
+    run_id = saved["run_id"]
+    assert saved["drop_len_m"] == 3.44
+    assert saved["rolls"] == 19
+    rolls.update_match_type(2, "offset")
+    try:
+        run = history.get_run(run_id)
+        assert run["result"]["match_type"] == "straight"
+        assert run["result"]["drop_len_m"] == 3.44
+        assert run["result"]["strips_per_roll"] == 2
+        assert run["result"]["rolls"] == 19
+    finally:
+        rolls.update_match_type(2, "straight")
+
+
+def test_list_runs_summary_pins_saved_values():
+    # 列表摘要与按号回看一致，均为落库时钉住的值
+    saved = estimate_service.run_estimate(2, 2, True, "跳对列表钉住", "offset")
+    run_id = saved["run_id"]
+    item = next(r for r in history.list_runs(1000) if r["id"] == run_id)
+    assert item["result"]["match_type"] == "offset"
+    assert item["result"]["drop_len_m"] == 3.76
+    assert item["result"]["strips_per_roll"] == 2
+    assert item["result"]["rolls"] == 19
 
 
 def test_default_match_type_falls_back_to_roll_default():

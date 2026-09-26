@@ -37,7 +37,7 @@ async function run(save) {
   <DropStripBar :drops="out.drops" :drop-len="out.drop_len_m" :rolls="out.rolls" />
   <details class="diagram">
     <summary>展开示意</summary>
-    <p>当次匹配方式：{{ out.match_type === 'offset' ? '跳对（层高 + 半个花高，半花高向上取到毫米）' : '直对（层高 + 花高）' }}</p>
+    <p>当次匹配方式：{{ out.match_type === 'offset' ? '跳对（层高 + 花高 + 半个花高，半花高向上取到毫米）' : '直对（层高 + 花高）' }}</p>
     <p>层高 {{ out.wall.height }} m + 对花余量 {{ (out.drop_len_m - out.wall.height).toFixed(3) }} m（花高 {{ out.pattern_m }} m）= 当次 drop_len：<strong>{{ out.drop_len_m }} m</strong></p>
     <p>每卷可裁 {{ out.strips_per_roll }} 条 · 共 {{ out.drops }} 条 · 需 <strong>{{ out.rolls }}</strong> 卷</p>
   </details>

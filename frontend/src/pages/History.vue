@@ -20,12 +20,12 @@ async function lookup() {
     <div v-if="detail" class="run-detail">
       <p>#{{ detail.id }} {{ detail.wall_name }} → <strong>{{ detail.result?.rolls }} 卷</strong></p>
       <p>匹配方式：<strong>{{ matchLabel(detail.result?.match_type) }}</strong></p>
-      <p>开放视图 drop_len：{{ detail.result?.drop_len_m }} m · 每条花高 {{ detail.result?.pattern_m }} m · {{ detail.result?.drops }} 条 · 每卷 {{ detail.result?.strips_per_roll }} 条</p>
+      <p>落库钉住 drop_len：{{ detail.result?.drop_len_m }} m · 每条花高 {{ detail.result?.pattern_m }} m · {{ detail.result?.drops }} 条 · 每卷 {{ detail.result?.strips_per_roll }} 条</p>
     </div>
   </div>
   <ul><li v-for="r in items" :key="r.id">
     #{{ r.id }} {{ r.wall_name }} → {{ r.result?.rolls }} 卷 · {{ matchLabel(r.result?.match_type) }} · drop {{ r.result?.drop_len_m }}m
   </li></ul>
-  <p class="hint">列表与按号回看均走开放视图字段。</p>
+  <p class="hint">列表与按号回看均显示落库时钉住的值，不按卷材现行默认重算。</p>
   </div>
 </template>
