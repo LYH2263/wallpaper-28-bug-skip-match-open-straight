@@ -1,0 +1,16 @@
+body { margin: 0; font-family: Georgia, serif; background: #faf3e8; }
+.wp-header { background: #6b4226; color: #fff; padding: 0.75rem 1rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.wp-header a { color: #ffd9a8; margin-right: 0.75rem; text-decoration: none; }
+.wp-header a.router-link-active { text-decoration: underline; }
+.page { padding: 1rem 1.5rem; }
+.strip-bar { display: flex; gap: 4px; align-items: flex-end; flex-wrap: wrap; }
+.strip { width: 14px; background: linear-gradient(#c49a6c, #8b5a2b); border-radius: 2px 2px 0 0; }
+.roll-chip { display: inline-block; margin: 0.25rem; padding: 0.5rem; background: #fff; border: 1px dashed #6b4226; }
+.warn { color: #a00; }
+.err { color: #a00; }
+.match-switch { margin-left: 0.5rem; white-space: nowrap; }
+.match-switch label { margin: 0 0.35rem; cursor: pointer; }
+.diagram { margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: #fff; border: 1px dashed #6b4226; }
+.diagram p { margin: 0.25rem 0; }
+.lookup { margin: 0.5rem 0 1rem; padding: 0.5rem 0.75rem; background: #fff; border: 1px dashed #6b4226; }
+.run-detail p { margin: 0.25rem 0; }

@@ -1,0 +1,17 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "9700:9700"
+    volumes:
+      - wallpaper_data:/data
+    environment:
+      DATA_DIR: /data
+  frontend:
+    build: ./frontend
+    ports:
+      - "4700:80"
+    depends_on:
+      - backend
+volumes:
+  wallpaper_data:
