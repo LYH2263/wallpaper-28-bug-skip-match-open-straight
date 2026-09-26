@@ -26,11 +26,11 @@ def roll_count(
         if pattern_m < 0:
             # 跳对且花高为负：参数无意义，拒绝测算
             raise ValueError("offset match requires a non-negative pattern height")
-        # 跳对在层高基础上再加半个花高，半花高向上取到毫米后换算
-        extra_m = math.ceil(pattern_m * 1000.0 / 2.0) / 1000.0
+        # 跳对在层高基础上再加整个花高：同参下条长长于直对，卷数也更多
+        extra_m = pattern_m
     else:
-        # 直对在层高基础上加整个花高，与改造前同参一致
-        extra_m = max(0.0, pattern_m)
+        # 直对在层高基础上再加半个花高，半花高向上取到毫米后换算，负花高按 0 截断
+        extra_m = math.ceil(max(0.0, pattern_m) * 1000.0 / 2.0) / 1000.0
     drop_len = float(height) + extra_m
     if drop_len <= 0:
         raise ValueError("invalid drop length")

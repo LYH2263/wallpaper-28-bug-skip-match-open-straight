@@ -32,30 +32,39 @@ def test_offset_negative_pattern_rejected_and_no_row():
     assert after == before, "跳对负花高被拒绝时不得新增 run"
 
 
-def test_saved_run_pins_match_type_independent_of_roll_default():
-    # 用跳对试算并保存
+def test_saved_run_pins_offset_independent_of_roll_default():
+    # 用跳对试算并保存：层高 2.8 + 整花高 0.64 = 3.44m，每卷 2 条，需 19 卷
     saved = estimate_service.run_estimate(2, 2, True, "跳对留档", "offset")
     run_id = saved["run_id"]
     assert saved["match_type"] == "offset"
-    assert saved["drop_len_m"] == 3.12
-    assert saved["rolls"] == 13
+    assert saved["drop_len_m"] == 3.44
+    assert saved["strips_per_roll"] == 2
+    assert saved["rolls"] == 19
 
-    # 事后只改卷材默认匹配方式为直对
+    # 事后把卷材默认匹配方式改为直对：详情与列表都不得退回直对口径重算
     rolls.update_match_type(2, "straight")
-    run = history.get_run(run_id)
-    assert run["result"]["match_type"] == "offset"
-    assert run["result"]["drop_len_m"] == 3.12
-    assert run["result"]["rolls"] == 13
 
-    # 回看接口同样返回写入时的值
-    # （重置回跳对，保持种子语义）
-    rolls.update_match_type(2, "straight")
+    detail = history.get_run(run_id)["result"]
+    assert detail["match_type"] == "offset"
+    assert detail["drop_len_m"] == 3.44
+    assert detail["strips_per_roll"] == 2
+    assert detail["rolls"] == 19
+
+    listed = next(r for r in history.list_runs(1000) if r["id"] == run_id)["result"]
+    assert listed["match_type"] == "offset"
+    assert listed["drop_len_m"] == 3.44
+    assert listed["strips_per_roll"] == 2
+    assert listed["rolls"] == 19
+
+    # 再开一次仍钉住写入回包，不随卷材现行默认变化
     again = history.get_run(run_id)["result"]
-    assert again["match_type"] == "offset"
+    assert again == detail
 
 
 def test_default_match_type_falls_back_to_roll_default():
-    # 不显式传 match_type 时沿用卷材当前默认（此时 roll 2 默认已是 straight）
+    # 不显式传 match_type 时沿用卷材当前默认（roll 2 此时默认已是 straight）
     r = estimate_service.run_estimate(2, 2, False, "", None)
     assert r["match_type"] == "straight"
-    assert r["drop_len_m"] == 3.44
+    assert r["drop_len_m"] == 3.12
+    assert r["strips_per_roll"] == 3
+    assert r["rolls"] == 13
